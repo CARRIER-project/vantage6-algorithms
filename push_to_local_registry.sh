@@ -1,4 +1,4 @@
-TAG=localhost:5001/v6-carrier-py
+TAG=localhost:5000/v6-carrier-py
 
 # Build image
 docker build -t $TAG .
