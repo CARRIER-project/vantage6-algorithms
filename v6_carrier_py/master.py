@@ -10,14 +10,14 @@ server after encryption.
 
 import time
 
+from vantage6.tools.container_client import ClientContainerProtocol
 from vantage6.tools.util import info
+from itertools import chain
 
-
-def master(client, data, *args, **kwargs):
+def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
     """Master algoritm.
 
-    The master algorithm is the chair of the Round Robin, which makes
-    sure everyone waits for their turn to identify themselfs.
+    Ask all nodes for their column names and combines them in one set.
     """
 
     # get all organizations (ids) that are within the collaboration
@@ -30,7 +30,7 @@ def master(client, data, *args, **kwargs):
     # in this case
     info("Defining input parameters")
     input_ = {
-        "method": "some_example_method",
+        "method": "column_names",
     }
 
     # create a new task for all organizations in the collaboration.
@@ -52,11 +52,13 @@ def master(client, data, *args, **kwargs):
         time.sleep(1)
 
     info("Obtaining results")
+
     results = client.get_results(task_id=task.get("id"))
-    print(results)
-    # results = [json.loads(result.get("result")) for result in results]
+
+    # Create generator that lists all columns and turn it into a set to remove duplicates
+    column_set = set(chain.from_iterable(results))
 
     info("master algorithm complete")
 
     # return all the messages from the nodes
-    return results
+    return column_set

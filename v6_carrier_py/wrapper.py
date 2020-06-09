@@ -28,7 +28,6 @@ def docker_wrapper(module: str):
     info(f"Using '{data_file}' as database")
     # with open(data_file, "r") as fp:
     data = pandas.read_csv(data_file)
-        # data = csv.reader(fp)
 
     # make the actual call to the method/function
     info("Dispatching ...")
