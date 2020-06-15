@@ -5,4 +5,4 @@ pycodestyle
 pytest
 pytest-coverage
 prospector
-pycodestyle
+pycodestyle==2.0.0
