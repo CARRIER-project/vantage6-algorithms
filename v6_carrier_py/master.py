@@ -14,13 +14,16 @@ from vantage6.tools.container_client import ClientContainerProtocol
 from vantage6.tools.util import info
 from itertools import chain
 
+NUM_RETRIES = 40
+
+
 def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
     """Master algoritm.
 
     Ask all nodes for their column names and combines them in one set.
     """
 
-    # get all organizations (ids) that are within the collaboration
+    # Get all organizations (ids) that are within the collaboration
     # FlaskIO knows the collaboration to which the container belongs
     # as this is encoded in the JWT (Bearer token)
     organizations = client.get_organizations_in_my_collaboration()
@@ -40,16 +43,24 @@ def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
         organization_ids=ids
     )
 
-    # wait for node to return results. Instead of polling it is also
+    # Wait for node to return results. Instead of polling it is also
     # possible to subscribe to a websocket channel to get status
     # updates
     info("Waiting for results")
     task_id = task.get("id")
     task = client.get_task(task_id)
-    while not task.get("complete"):
+
+    for r in range(NUM_RETRIES):
         task = client.get_task(task_id)
+        if task.get('complete'):
+            break
+
         info("Waiting for results")
         time.sleep(1)
+
+    # Raise Exception if task has still not completed
+    if not task.get('complete'):
+        raise Exception(f'Task timeout for master function column names\ntask id: {task_id}')
 
     info("Obtaining results")
 
