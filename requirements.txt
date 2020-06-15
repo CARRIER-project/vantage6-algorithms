@@ -4,3 +4,4 @@ git+https://github.com/IKNL/vantage6-toolkit
 pycodestyle
 pytest
 pytest-coverage
+prospector
