@@ -1,0 +1,5 @@
+# .coveragerc to control coverage.py
+[run]
+branch = True
+source = ./v6_carrier_py/
+omit = ./v6_carrier_py/local/
