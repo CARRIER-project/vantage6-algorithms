@@ -1,3 +1,9 @@
+
+"""
+Custom wrapper
+Not used at the moment but might be useful for debugging algorithms
+"""
+
 import os
 import pickle
 
