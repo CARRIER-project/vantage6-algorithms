@@ -1,3 +1,4 @@
+![Build](https://github.com/CARRIER-project/vantage6-algorithms/workflows/Build/badge.svg)
 <h1 align="center">
   <br>
   <a href="https://vantage6.ai"><img src="https://github.com/IKNL/guidelines/blob/master/resources/logos/vantage6.png?raw=true" alt="vantage6" width="400"></a>
