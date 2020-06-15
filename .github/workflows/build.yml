@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        os: ['ubuntu-latest']
         python-version: ['3.6', '3.7', '3.8']
     steps:
       - uses: actions/checkout@v2
@@ -30,6 +30,7 @@ jobs:
       - name: Check style against standards using prospector
         shell: bash -l {0}
         run: prospector -o grouped -o pylint:pylint-report.txt
+        continue-on-error: true
       - name: Build
         shell: bash -l {0}
         run: |

@@ -17,10 +17,10 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name='v6_carrier_py',
     version="1.0.0",
-    description='vantage6 biolerplate',
+    description='vantage6 CARRIER algorithms',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/IKNL/v6_boilerplate-py',
+    url='https://github.com/CARRIER-project/vantage6-algorithms',
     packages=find_packages(),
     python_requires='>=3.6',
     install_requires=[
