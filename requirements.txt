@@ -5,3 +5,4 @@ pycodestyle
 pytest
 pytest-coverage
 prospector
+pycodestyle
