@@ -4,5 +4,5 @@ git+https://github.com/IKNL/vantage6-toolkit
 pycodestyle==2.0.0
 pytest
 pytest-coverage
-prospector
+prospector[with_pyroma]
 
