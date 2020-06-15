@@ -14,7 +14,7 @@ from vantage6.tools.container_client import ClientContainerProtocol
 from vantage6.tools.util import info
 from itertools import chain
 
-NUM_RETRIES = 40
+NUM_TRIES = 40
 
 
 def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
@@ -22,6 +22,8 @@ def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
 
     Ask all nodes for their column names and combines them in one set.
     """
+    retries = kwargs.get('tries', NUM_TRIES)
+
 
     # Get all organizations (ids) that are within the collaboration
     # FlaskIO knows the collaboration to which the container belongs
@@ -48,9 +50,8 @@ def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
     # updates
     info("Waiting for results")
     task_id = task.get("id")
-    task = client.get_task(task_id)
 
-    for r in range(NUM_RETRIES):
+    for r in range(retries):
         task = client.get_task(task_id)
         if task.get('complete'):
             break
