@@ -24,16 +24,15 @@ def dispatch_tasks(client: ClientContainerProtocol, data, *args, method=None, **
     if not method:
         raise Exception('You have to specify a method.')
 
-    retries = kwargs.get('tries', NUM_TRIES)
+    tries = kwargs.get('tries', NUM_TRIES)
 
-    whoami = client.whoami
-    my_organization = whoami.organization_id
+    my_organization = client.whoami.organization_id
 
     # Get all organizations (ids) that are within the collaboration
     # FlaskIO knows the collaboration to which the container belongs
     # as this is encoded in the JWT (Bearer token)
     organizations = client.get_organizations_in_my_collaboration()
-    ids = map(lambda x: x['id['], organizations)
+    ids = map(lambda x: x['id'], organizations)
     ids = filter(lambda x: x != my_organization, ids)
 
     # The input for the algorithm is the same for all organizations
@@ -47,31 +46,33 @@ def dispatch_tasks(client: ClientContainerProtocol, data, *args, method=None, **
     info("Dispatching node-tasks")
     task = client.create_new_task(
         input_=input_,
-        organization_ids=ids
+        organization_ids=list(ids)
     )
 
+    return _get_results(client, tries, task)
+
+
+def _get_results(client, tries, task):
+    """
+    Check up to n times if a task has completed, return the results if possible. Otherwise, raise an exception.
+    """
     # Wait for node to return results. Instead of polling it is also
     # possible to subscribe to a websocket channel to get status
     # updates
     info("Waiting for results")
     task_id = task.get("id")
-
-    for r in range(retries):
+    for r in range(tries):
         task = client.get_task(task_id)
         if task.get('complete'):
             break
 
         info("Waiting for results")
         time.sleep(1)
-
     # Raise Exception if task has still not completed
     if not task.get('complete'):
         raise Exception(f'Task timeout for master function column names\ntask id: {task_id}')
-
     info("Obtaining results")
-
     results = client.get_results(task_id=task.get("id"))
-
     return results
 
 
