@@ -18,3 +18,4 @@ def test_column_names_returns_column_set():
     target = set(COLUMN_NAMES)
 
     assert target == result
+

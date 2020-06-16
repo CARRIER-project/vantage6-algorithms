@@ -9,33 +9,38 @@ server after encryption.
 """
 
 import time
+from itertools import chain
 
 from vantage6.tools.container_client import ClientContainerProtocol
 from vantage6.tools.util import info
-from itertools import chain
 
 NUM_TRIES = 40
 
 
-def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
-    """Master algoritm.
-
-    Ask all nodes for their column names and combines them in one set.
+def dispatch_tasks(client: ClientContainerProtocol, data, *args, method=None, **kwargs):
     """
+    Generic master algoritm
+    """
+    if not method:
+        raise Exception('You have to specify a method.')
+
     retries = kwargs.get('tries', NUM_TRIES)
 
+    whoami = client.whoami
+    my_organization = whoami.organization_id
 
     # Get all organizations (ids) that are within the collaboration
     # FlaskIO knows the collaboration to which the container belongs
     # as this is encoded in the JWT (Bearer token)
     organizations = client.get_organizations_in_my_collaboration()
-    ids = [organization.get("id") for organization in organizations]
+    ids = map(lambda x: x['id['], organizations)
+    ids = filter(lambda x: x != my_organization, ids)
 
     # The input for the algorithm is the same for all organizations
     # in this case
     info("Defining input parameters")
     input_ = {
-        "method": "column_names",
+        "method": method,
     }
 
     # create a new task for all organizations in the collaboration.
@@ -66,6 +71,17 @@ def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
     info("Obtaining results")
 
     results = client.get_results(task_id=task.get("id"))
+
+    return results
+
+
+def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
+    """Master algoritm.
+
+    Ask all nodes for their column names and combines them in one set.
+    """
+
+    results = dispatch_tasks(client, data, method='column_names')
 
     # Create generator that lists all columns and turn it into a set to remove duplicates
     column_set = set(chain.from_iterable(results))
