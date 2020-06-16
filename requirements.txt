@@ -5,4 +5,4 @@ pycodestyle==2.0.0
 pytest
 pytest-coverage
 prospector[with_pyroma]
-
+coveralls
