@@ -1,6 +1,9 @@
 ![Build](https://github.com/CARRIER-project/vantage6-algorithms/workflows/Build/badge.svg)
 <h1 align="center">
   <br>
+[![Coverage Status](https://coveralls.io/repos/github/CARRIER-project/vantage6-algorithms/badge.svg?branch=master)](https://coveralls.io/github/CARRIER-project/vantage6-algorithms?branch=master)  
+  
+  
   <a href="https://vantage6.ai"><img src="https://github.com/IKNL/guidelines/blob/master/resources/logos/vantage6.png?raw=true" alt="vantage6" width="400"></a>
 </h1>
 
