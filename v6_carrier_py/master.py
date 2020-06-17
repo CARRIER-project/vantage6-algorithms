@@ -80,7 +80,7 @@ def column_names(client: ClientContainerProtocol, data, *args, exclude_orgs=(), 
     Ask all nodes for their column names and combines them in one set.
     """
 
-    results = _dispatch_tasks(client, data, method='column_names', exclude_orgs=exclude_orgs)
+    results = _dispatch_tasks(client, data, *args, method='column_names', exclude_orgs=exclude_orgs, **kwargs)
 
     # Create generator that lists all columns and turn it into a set to remove duplicates
     column_set = set(chain.from_iterable(results))

@@ -1,5 +1,6 @@
 from v6_carrier_py import master
 from unittest.mock import MagicMock
+import pytest
 
 ID = 1
 COLUMN_NAMES = ['name1', 'name2']
@@ -11,7 +12,7 @@ def test_column_names_returns_column_set():
     client = create_base_mock_client()
     client.get_results.return_value = [COLUMN_NAMES]
 
-    result = master.column_names(client, None, {'tries': TRIES})
+    result = master.column_names(client, None, tries=TRIES)
 
     target = set(COLUMN_NAMES)
 
@@ -24,8 +25,16 @@ def test_master_node_excluded_from_task():
     client = create_base_mock_client()
     client.get_organizations_in_my_collaboration.return_value = [{'id': i} for i in organization_ids]
 
-    master.column_names(client, None, {'tries': TRIES}, exclude_orgs=[my_organization_id])
+    master.column_names(client, None, tries=TRIES, exclude_orgs=[my_organization_id])
     client.create_new_task.assert_called_once_with(input_={'method': 'column_names'}, organization_ids=[2, 3])
+
+
+def test_raise_exception_when_task_timeout():
+    client = create_base_mock_client()
+    client.get_task.return_value = {'complete': False}
+
+    with pytest.raises(Exception):
+        master.column_names(client, None, tries=TRIES)
 
 
 def create_base_mock_client():
