@@ -22,10 +22,9 @@ def test_master_node_excluded_from_task():
     my_organization_id = 1
     organization_ids = [1, 2, 3]
     client = create_base_mock_client()
-    client.whoami.organization_id = my_organization_id
     client.get_organizations_in_my_collaboration.return_value = [{'id': i} for i in organization_ids]
 
-    master.column_names(client, None, {'tries': TRIES})
+    master.column_names(client, None, {'tries': TRIES}, exclude_orgs=[my_organization_id])
     client.create_new_task.assert_called_once_with(input_={'method': 'column_names'}, organization_ids=[2, 3])
 
 
