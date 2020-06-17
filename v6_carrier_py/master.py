@@ -17,13 +17,10 @@ NUM_TRIES = 40
 TOKEN_FILE = 'TOKEN_FILE'
 
 
-def dispatch_tasks(client: ClientContainerProtocol, data, *args, method=None, exclude_orgs=(), **kwargs):
+def _dispatch_tasks(client: ClientContainerProtocol, data, method, *args, exclude_orgs=(), **kwargs):
     """
-    Generic master algoritm
+    Generic master algorithm
     """
-    if not method:
-        raise Exception('You have to specify a method.')
-
     tries = kwargs.get('tries', NUM_TRIES)
 
     # Get all organizations (ids) that are within the collaboration
@@ -83,7 +80,7 @@ def column_names(client: ClientContainerProtocol, data, *args, exclude_orgs=(), 
     Ask all nodes for their column names and combines them in one set.
     """
 
-    results = dispatch_tasks(client, data, method='column_names', exclude_orgs=exclude_orgs)
+    results = _dispatch_tasks(client, data, method='column_names', exclude_orgs=exclude_orgs)
 
     # Create generator that lists all columns and turn it into a set to remove duplicates
     column_set = set(chain.from_iterable(results))
