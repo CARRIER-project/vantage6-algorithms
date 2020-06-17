@@ -7,7 +7,6 @@ node just the same as any other method.
 When a return statement is reached the result is send to the central
 server after encryption.
 """
-
 import time
 from itertools import chain
 
@@ -15,9 +14,10 @@ from vantage6.tools.container_client import ClientContainerProtocol
 from vantage6.tools.util import info
 
 NUM_TRIES = 40
+TOKEN_FILE = 'TOKEN_FILE'
 
 
-def dispatch_tasks(client: ClientContainerProtocol, data, *args, method=None, **kwargs):
+def dispatch_tasks(client: ClientContainerProtocol, data, *args, method=None, exclude_orgs=(), **kwargs):
     """
     Generic master algoritm
     """
@@ -26,14 +26,15 @@ def dispatch_tasks(client: ClientContainerProtocol, data, *args, method=None, **
 
     tries = kwargs.get('tries', NUM_TRIES)
 
-    my_organization = client.whoami.organization_id
-
     # Get all organizations (ids) that are within the collaboration
     # FlaskIO knows the collaboration to which the container belongs
     # as this is encoded in the JWT (Bearer token)
     organizations = client.get_organizations_in_my_collaboration()
     ids = map(lambda x: x['id'], organizations)
-    ids = filter(lambda x: x != my_organization, ids)
+    ids = filter(lambda x: x not in exclude_orgs, ids)
+    ids = list(ids)
+
+    info(f'Dispatching task to organizations with ids {ids}.\n{exclude_orgs} will be excluded.')
 
     # The input for the algorithm is the same for all organizations
     # in this case
@@ -76,13 +77,13 @@ def _get_results(client, tries, task):
     return results
 
 
-def column_names(client: ClientContainerProtocol, data, *args, **kwargs):
+def column_names(client: ClientContainerProtocol, data, *args, exclude_orgs=(), **kwargs):
     """Master algoritm.
 
     Ask all nodes for their column names and combines them in one set.
     """
 
-    results = dispatch_tasks(client, data, method='column_names')
+    results = dispatch_tasks(client, data, method='column_names', exclude_orgs=exclude_orgs)
 
     # Create generator that lists all columns and turn it into a set to remove duplicates
     column_set = set(chain.from_iterable(results))
