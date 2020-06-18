@@ -94,13 +94,13 @@ def column_names(client: ClientContainerProtocol, data, *args, exclude_orgs=(), 
     return column_set
 
 
-def correlation_matrix(client: ClientContainerProtocol, data, key, *args, **kwargs):
+def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, **kwargs):
     """
     Compute a correlation matrix over all datasets together. Data will be joined using the specified key.
     TODO: What if different datasets use different keys to mean the same thing? How do we specify this?
     """
     results = _dispatch_tasks(client, data, *args, method='get_data', **kwargs)
 
-    combined_df = reduce(lambda left, right: pd.merge(left, right, on=key), results)
+    combined_df = reduce(lambda left, right: pd.merge(left, right, on=keys), results)
 
     return combined_df.corr()
