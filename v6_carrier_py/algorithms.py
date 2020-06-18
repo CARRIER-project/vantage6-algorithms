@@ -16,3 +16,13 @@ def RPC_column_names(data: pd.DataFrame, *args, **kwargs):
 
 def RPC_correlation_matrix(data: pd.DataFrame, *args, **kwargs):
     return data.corr()
+
+
+def RPC_get_data(data: pd.DataFrame, *args, **kwargs):
+    """
+    Return the raw data.
+    TODO: This function should not exist in the final version of the code! The data should be pseudonymized at the very
+        least!
+
+    """
+    return data

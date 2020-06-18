@@ -1,6 +1,7 @@
 from v6_carrier_py import master
 from unittest.mock import MagicMock
 import pytest
+import pandas as pd
 
 ID = 1
 COLUMN_NAMES = ['name1', 'name2']
@@ -35,6 +36,21 @@ def test_raise_exception_when_task_timeout():
 
     with pytest.raises(Exception):
         master.column_names(client, None, tries=TRIES)
+
+
+def test_master_corr_matrix_is_combined_corr_matrix():
+    client = create_base_mock_client()
+
+    df1 = pd.DataFrame({'id': [1], 'column1': [123]})
+    df2 = pd.DataFrame({'id': [1], 'column2': [321]})
+
+    node_results = [df1, df2]
+    client.get_results.return_value = node_results
+
+    result = master.correlation_matrix(client, None, tries=TRIES, key='id')
+    target = pd.DataFrame({'id': [1], 'column1': [123], 'column2': [321]}).corr()
+
+    pd.testing.assert_frame_equal(target, result)
 
 
 def create_base_mock_client():
