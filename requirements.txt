@@ -1,8 +1,9 @@
-vantage6
-pandas
+coveralls
 git+https://github.com/IKNL/vantage6-toolkit
+pandas
 pycodestyle==2.0.0
 pytest
 pytest-coverage
 prospector[with_pyroma]
-coveralls
+rdflib==5.0.0
+vantage6
