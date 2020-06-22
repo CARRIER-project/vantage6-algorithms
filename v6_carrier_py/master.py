@@ -101,6 +101,10 @@ def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, 
     """
     results = _dispatch_tasks(client, data, *args, method='get_data', **kwargs)
 
-    combined_df = reduce(lambda left, right: pd.merge(left, right, on=keys), results)
+    combined_df = _merge_multiple_dfs(results, on=keys)
 
     return combined_df.corr()
+
+
+def _merge_multiple_dfs(df_list, on):
+    return reduce(lambda left, right: pd.merge(left, right, on=on), df_list)

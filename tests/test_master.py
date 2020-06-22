@@ -4,7 +4,6 @@ import pytest
 import pandas as pd
 
 ID = 1
-COLUMN_NAMES = ['name1', 'name2']
 TRIES = 1
 MOCK_TASK = {'id': ID}
 KEYS = ['GBAGeboorteJaar', 'GBAGeboorteMaand', 'GBAGeboorteDag', 'GBAGeslacht', 'GBAPostcode', 'GBAHuisnummer',
@@ -16,11 +15,11 @@ COLUMN2 = 'column2'
 
 def test_column_names_returns_column_set():
     client = create_base_mock_client()
-    client.get_results.return_value = [COLUMN_NAMES]
+    client.get_results.return_value = [[COLUMN1], [COLUMN2]]
 
     result = master.column_names(client, None, tries=TRIES)
 
-    target = set(COLUMN_NAMES)
+    target = {COLUMN1, COLUMN2}
 
     assert target == result
 
@@ -109,13 +108,10 @@ def test_dont_mix_up_partly_matching_keys():
     assert result[COLUMN1][COLUMN2] == 1
 
 
-
-
-
 def create_base_mock_client():
     client = MagicMock()
     client.create_new_task.return_value = MOCK_TASK
     client.get_task.return_value = {'complete': True}
-    client.get_results.return_value = [COLUMN_NAMES]
+    client.get_results.return_value = [COLUMN1, COLUMN2]
 
     return client()
