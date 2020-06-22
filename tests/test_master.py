@@ -6,7 +6,7 @@ import pandas as pd
 ID = 1
 TRIES = 1
 MOCK_TASK = {'id': ID}
-KEYS = ['GBAGeboorteJaar', 'GBAGeboorteMaand', 'GBAGeboorteDag', 'GBAGeslacht', 'GBAPostcode', 'GBAHuisnummer',
+IDENTIFIER_KEYS = ['GBAGeboorteJaar', 'GBAGeboorteMaand', 'GBAGeboorteDag', 'GBAGeslacht', 'GBAPostcode', 'GBAHuisnummer',
         'GBAToev']
 KEY_VALUES = [1987, 10, 30, 1, '1098ln', 11, 'b']
 COLUMN1 = 'column1'
@@ -60,13 +60,13 @@ def test_master_corr_matrix_is_combined_corr_matrix():
 def test_master_corr_matrix_joins_on_multiple_keys():
     client = create_base_mock_client()
 
-    df1 = pd.DataFrame(data=[KEY_VALUES + [123]], columns=KEYS + [COLUMN1])
-    df2 = pd.DataFrame(data=[KEY_VALUES + [321]], columns=KEYS + [COLUMN2])
+    df1 = pd.DataFrame(data=[KEY_VALUES + [123]], columns=IDENTIFIER_KEYS + [COLUMN1])
+    df2 = pd.DataFrame(data=[KEY_VALUES + [321]], columns=IDENTIFIER_KEYS + [COLUMN2])
 
     client.get_results.return_value = [df1, df2]
 
-    target = pd.DataFrame(data=[KEY_VALUES + [123, 321]], columns=KEYS + [COLUMN1, COLUMN2]).corr()
-    result = master.correlation_matrix(client, None, keys=KEYS, tries=TRIES)
+    target = pd.DataFrame(data=[KEY_VALUES + [123, 321]], columns=IDENTIFIER_KEYS + [COLUMN1, COLUMN2]).corr()
+    result = master.correlation_matrix(client, None, keys=IDENTIFIER_KEYS, tries=TRIES)
 
     pd.testing.assert_frame_equal(target, result)
 
@@ -75,12 +75,12 @@ def test_correlation_matrix_if_no_keys_provided_infer_keys():
     client = create_base_mock_client()
     key_values = [1987, 10, 30, 1, '1098ln', 11, 'b']
 
-    df1 = pd.DataFrame(data=[key_values + [123]], columns=KEYS + [COLUMN1])
-    df2 = pd.DataFrame(data=[key_values + [321]], columns=KEYS + [COLUMN2])
+    df1 = pd.DataFrame(data=[key_values + [123]], columns=IDENTIFIER_KEYS + [COLUMN1])
+    df2 = pd.DataFrame(data=[key_values + [321]], columns=IDENTIFIER_KEYS + [COLUMN2])
 
     client.get_results.return_value = [df1, df2]
 
-    target = pd.DataFrame(data=[key_values + [123, 321]], columns=KEYS + [COLUMN1, COLUMN2]).corr()
+    target = pd.DataFrame(data=[key_values + [123, 321]], columns=IDENTIFIER_KEYS + [COLUMN1, COLUMN2]).corr()
 
     # This time no keys are specified, but it should still give the expected result
     result = master.correlation_matrix(client, None, tries=TRIES)
@@ -98,8 +98,8 @@ def test_correlation_matrix_dont_mix_up_partly_matching_keys():
     data_left = [person1 + [1], person2 + [0]]
     data_right = [person1 + [1], person2 + [0]]
 
-    pd_left = pd.DataFrame(data_left, columns=KEYS + [COLUMN1])
-    pd_right = pd.DataFrame(data_right, columns=KEYS + [COLUMN2])
+    pd_left = pd.DataFrame(data_left, columns=IDENTIFIER_KEYS + [COLUMN1])
+    pd_right = pd.DataFrame(data_right, columns=IDENTIFIER_KEYS + [COLUMN2])
 
     client.get_results.return_value = [pd_left, pd_right]
 
