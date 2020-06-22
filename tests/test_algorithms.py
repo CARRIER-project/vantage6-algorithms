@@ -14,3 +14,9 @@ def test_corr_matrix_creates_corr_matrix():
     result = algorithms.RPC_correlation_matrix(DATA)
 
     pd.testing.assert_frame_equal(DATA.corr(), result)
+
+
+def test_get_data_returns_raw_data():
+    result = algorithms.RPC_get_data(DATA)
+
+    pd.testing.assert_frame_equal(DATA, result)
