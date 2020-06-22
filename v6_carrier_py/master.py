@@ -96,7 +96,13 @@ def column_names(client: ClientContainerProtocol, data, *args, exclude_orgs=(), 
 
 def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, **kwargs):
     """
-    Compute a correlation matrix over all datasets together. Data will be joined using the specified key.
+    Compute a correlation matrix over all datasets together. Data will be joined using the specified key. Right now
+    the datasets are merged using outer join, which means that keys without matches will get empty values for the
+    missing columns.
+
+    If multiple keys are specified records are merged when all keys match.
+
+    If no keys are specified the datasets are joined on all columns with the same name.
     TODO: What if different datasets use different keys to mean the same thing? How do we specify this?
     """
     results = _dispatch_tasks(client, data, *args, method='get_data', **kwargs)
@@ -107,4 +113,4 @@ def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, 
 
 
 def _merge_multiple_dfs(df_list, on):
-    return reduce(lambda left, right: pd.merge(left, right, on=on), df_list)
+    return reduce(lambda left, right: pd.merge(left, right, on=on, how='outer'), df_list)
