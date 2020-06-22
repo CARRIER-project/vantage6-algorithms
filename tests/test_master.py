@@ -24,7 +24,7 @@ def test_column_names_returns_column_set():
     assert target == result
 
 
-def test_master_node_excluded_from_task():
+def test_column_names_master_node_excluded_from_task():
     my_organization_id = 1
     organization_ids = [1, 2, 3]
     client = create_base_mock_client()
@@ -34,7 +34,7 @@ def test_master_node_excluded_from_task():
     client.create_new_task.assert_called_once_with(input_={'method': 'column_names'}, organization_ids=[2, 3])
 
 
-def test_raise_exception_when_task_timeout():
+def test_column_names_raise_exception_when_task_timeout():
     client = create_base_mock_client()
     client.get_task.return_value = {'complete': False}
 
@@ -71,7 +71,7 @@ def test_master_corr_matrix_joins_on_multiple_keys():
     pd.testing.assert_frame_equal(target, result)
 
 
-def test_if_no_keys_provided_infer_keys():
+def test_correlation_matrix_if_no_keys_provided_infer_keys():
     client = create_base_mock_client()
     key_values = [1987, 10, 30, 1, '1098ln', 11, 'b']
 
@@ -88,7 +88,7 @@ def test_if_no_keys_provided_infer_keys():
     pd.testing.assert_frame_equal(target, result)
 
 
-def test_dont_mix_up_partly_matching_keys():
+def test_correlation_matrix_dont_mix_up_partly_matching_keys():
     client = create_base_mock_client()
 
     # Two different people with the same birth date
