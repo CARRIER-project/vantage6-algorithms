@@ -1,5 +1,4 @@
 import pandas as pd
-import rdflib
 from vantage6.tools.util import info
 
 
@@ -19,8 +18,11 @@ def RPC_correlation_matrix(data: pd.DataFrame, *args, **kwargs):
     return data.corr()
 
 
-def RPC_get_printable_graph(data: rdflib.Graph, *args, **kwargs):
+def RPC_get_data(data: pd.DataFrame, *args, **kwargs):
     """
-    Return printable graph for turtle-based linked data
+    Return the raw data.
+    TODO: This function should not exist in the final version of the code! The data should be pseudonymized at the very
+        least!
+
     """
-    return data.serialize(format="turtle").decode("utf-8")
+    return data
