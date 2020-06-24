@@ -1,8 +1,9 @@
-vantage6
-pandas
+coveralls
 git+https://github.com/IKNL/vantage6-toolkit
+pandas
 pycodestyle==2.0.0
 pytest
 pytest-coverage
 prospector[with_pyroma]
-coveralls
+sparql-client==3.7
+vantage6
