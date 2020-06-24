@@ -5,5 +5,5 @@ pycodestyle==2.0.0
 pytest
 pytest-coverage
 prospector[with_pyroma]
-rdflib==5.0.0
+sparql-client==3.7
 vantage6

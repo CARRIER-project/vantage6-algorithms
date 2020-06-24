@@ -1,7 +1,6 @@
 import os
 import pickle
 
-import rdflib
 from vantage6.tools.dispatch_rpc import dispact_rpc
 from vantage6.tools.util import info
 
@@ -24,14 +23,9 @@ def docker_wrapper(module: str):
     with open(token_file) as fp:
         token = fp.read().strip()
 
-    data_file = os.environ["DATABASE_URI"]
-    info(f"Using '{data_file}' as database")
-    # with open(data_file, "r") as fp:
-    g = rdflib.Graph()
-    data = g.parse(data_file, format='ttl')
-
     # make the actual call to the method/function
     info("Dispatching ...")
+    data = None
     output = dispact_rpc(data, input_data, module, token)
 
     # write output from the method to mounted output file. Which will be
