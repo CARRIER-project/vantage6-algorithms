@@ -8,11 +8,10 @@ When a return statement is reached the result is send to the central
 server after encryption.
 """
 import time
-from itertools import chain
-from typing import Union, Dict
-import pandas as pd
 from functools import reduce
+from itertools import chain
 
+import pandas as pd
 from vantage6.tools.container_client import ClientContainerProtocol
 from vantage6.tools.util import info
 
