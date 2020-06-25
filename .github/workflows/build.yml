@@ -29,7 +29,9 @@ jobs:
           pip install -r requirements.txt
       - name: Check style against standards using prospector
         shell: bash -l {0}
-        run: prospector -o grouped -o pylint:pylint-report.txt
+        run: |
+            pip install prospector[with_pyroma]
+            prospector -o grouped -o pylint:pylint-report.txt
         continue-on-error: true
       - name: Build
         shell: bash -l {0}
@@ -38,10 +40,12 @@ jobs:
       - name: Test
         shell: bash -l {0}
         run: |
+          pip install pytest pytest-coverage
           python setup.py test
           pytest --cov --cov-report xml --cov-report term
       - name: Publish coverage to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
+          pip install coveralls
           coveralls -v
