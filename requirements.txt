@@ -1,3 +1,4 @@
 vantage6
 pandas
 git+https://github.com/IKNL/vantage6-toolkit
+scikit-learn

@@ -10,8 +10,11 @@ server after encryption.
 import time
 from functools import reduce
 from itertools import chain
+from typing import List
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
 from vantage6.tools.container_client import ClientContainerProtocol
 from vantage6.tools.util import info
 
@@ -104,11 +107,34 @@ def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, 
     If no keys are specified the datasets are joined on all columns with the same name.
     TODO: What if different datasets use different keys to mean the same thing? How do we specify this?
     """
-    results = _dispatch_tasks(client, data, *args, method='get_data', **kwargs)
-
-    combined_df = _merge_multiple_dfs(results, on=keys)
+    combined_df = _combine_all_node_data(args, client, data, keys)
 
     return combined_df.corr()
+
+
+def train_model(client: ClientContainerProtocol, data, pipeline: Pipeline, features: List[str], target: str, keys=None,
+                *args, **kwargs):
+    """
+    Retrieve data from nodes and train data analysis pipeline on it. Returns the performance of the resulting model.
+    TODO: How and where do we save our model?
+    """
+    results = _combine_all_node_data(client, data, keys)
+
+    X = results[features]
+    y = results[target]
+
+    # Split data
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+
+    pipeline.fit(X_train, y_train)
+    return pipeline.score(X_test, y_test)
+
+
+def _combine_all_node_data(client, data, keys) -> pd.DataFrame:
+    results = _dispatch_tasks(client, data, method='get_data')
+    combined_df = _merge_multiple_dfs(results, on=keys)
+    return combined_df
 
 
 def _merge_multiple_dfs(df_list, on):

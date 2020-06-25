@@ -1,3 +1,8 @@
+from sklearn import pipeline
+from sklearn.naive_bayes import GaussianNB
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_iris
+
 from v6_carrier_py import master
 from unittest.mock import MagicMock
 import pytest
@@ -6,11 +11,14 @@ import pandas as pd
 ID = 1
 TRIES = 1
 MOCK_TASK = {'id': ID}
-IDENTIFIER_KEYS = ['GBAGeboorteJaar', 'GBAGeboorteMaand', 'GBAGeboorteDag', 'GBAGeslacht', 'GBAPostcode', 'GBAHuisnummer',
-        'GBAToev']
+IDENTIFIER_KEYS = ['GBAGeboorteJaar', 'GBAGeboorteMaand', 'GBAGeboorteDag', 'GBAGeslacht', 'GBAPostcode',
+                   'GBAHuisnummer',
+                   'GBAToev']
 KEY_VALUES = [1987, 10, 30, 1, '1098ln', 11, 'b']
 COLUMN1 = 'column1'
 COLUMN2 = 'column2'
+
+IRIS_DATASET = load_iris()
 
 
 def test_column_names_returns_column_set():
@@ -106,6 +114,22 @@ def test_correlation_matrix_dont_mix_up_partly_matching_keys():
     # If data is merged correctly, correlation between column1 and column2 should be 1, otherwise it is 0.5
     result = master.correlation_matrix(client, None, tries=TRIES)
     assert result[COLUMN1][COLUMN2] == 1
+
+
+def test_train_model_runs_pipeline():
+    # TODO: Remove test later
+    pipe = pipeline.make_pipeline(StandardScaler(), GaussianNB(priors=None))
+    feature_names = IRIS_DATASET['feature_names']
+    data = pd.DataFrame(data=IRIS_DATASET['data'], columns=feature_names)
+    data['y'] = IRIS_DATASET['target']
+
+    client = create_base_mock_client()
+    client.get_results.return_value = [data]
+    result = master.train_model(client, None, pipe, feature_names, 'y')
+
+    print(result)
+
+    assert result is not None
 
 
 def create_base_mock_client():
