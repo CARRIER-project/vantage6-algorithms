@@ -1,0 +1,41 @@
+@prefix txn: <http://example.org/data/transaction/> .
+@prefix log: <http://example.org/ont/transaction-log/> .
+
+txn:123 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:124 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:125 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:126 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:127 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:128 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:129 a log:Transaction ;
+	log:statusCode 500 .
+
+txn:130 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:131 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:132 a log:Transaction ;
+	log:statusCode 500 .
+
+txn:133 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:134 a log:Transaction ;
+	log:statusCode 200 .
+
+txn:135 a log:Transaction ;
+	log:statusCode 401 .
