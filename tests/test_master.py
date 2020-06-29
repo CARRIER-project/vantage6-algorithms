@@ -127,9 +127,7 @@ def test_train_model_runs_pipeline():
     client.get_results.return_value = [data]
     result = master.train_model(client, None, pipe, feature_names, 'y')
 
-    print(result)
-
-    assert result is not None
+    assert 0 <= result <= 1
 
 
 def create_base_mock_client():
