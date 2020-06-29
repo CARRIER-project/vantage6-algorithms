@@ -30,7 +30,7 @@ jobs:
       - name: Check style against standards using prospector
         shell: bash -l {0}
         run: |
-            pip install prospector[with_pyroma]
+            pip install -r requirements-test.txt
             prospector -o grouped -o pylint:pylint-report.txt
         continue-on-error: true
       - name: Build
