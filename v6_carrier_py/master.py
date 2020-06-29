@@ -107,7 +107,7 @@ def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, 
     If no keys are specified the datasets are joined on all columns with the same name.
     TODO: What if different datasets use different keys to mean the same thing? How do we specify this?
     """
-    combined_df = _combine_all_node_data(args, client, data, keys)
+    combined_df = _combine_all_node_data(client, data, keys)
 
     return combined_df.corr()
 
