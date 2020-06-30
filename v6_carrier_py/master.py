@@ -22,6 +22,7 @@ import traceback
 
 NUM_TRIES = 40
 TOKEN_FILE = 'TOKEN_FILE'
+RANDOM_SEED = 5
 
 
 def _dispatch_tasks(client: ClientContainerProtocol, data, method, *args, exclude_orgs=(), **kwargs):
@@ -117,21 +118,33 @@ def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, 
     return combined_df.corr()
 
 
-def train_model(client: ClientContainerProtocol, data, pipeline: Pipeline, features: List[str], target: str, keys=None,
-                *args, **kwargs):
+def fit_pipeline(client: ClientContainerProtocol, data, pipeline: Pipeline, features: List[str], target: str,
+                 identifying_columns=None, *args, **kwargs):
     """
     Retrieve data from nodes and train data analysis pipeline on it. Returns the performance of the resulting model.
     TODO: How and where do we save our model?
+
+    :param client: Client for accessing Vantage6 proxy server. Is a parameter for all master algorithms
+    :param data: Data from datastation as Pandas DataFrame. Is handled by wrapper
+    :param pipeline: A sklearn pipeline containing one or multiple data transformations. Should have a `fit` and
+                        `predict` method.
+    :param features: The features that should be used in the fitting of the pipeline.
+    :param target: The field that should be used as target for the machine learning algorithm.
+    :param identifying_columns: The identifying fields for joining datasets.
+    :param args:
+    :param kwargs:
+    :return:
     """
     try:
         info(f'Training pipeline with the following steps: {pipeline.named_steps}')
-        results = _combine_all_node_data(client, data, keys, *args, **kwargs)
+        results = _combine_all_node_data(client, data, identifying_columns, *args, **kwargs)
 
         X = results[features].values
         y = results[target].values
 
         # Split data
-        X_train, X_test, y_train, y_test = train_test_split(X, y)
+        # TODO: Make splitting of dataset controllable from client-side
+        X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=RANDOM_SEED)
 
         pipeline.fit(X_train, y_train)
         predictions = pipeline.predict(X_test)
@@ -145,13 +158,13 @@ def train_model(client: ClientContainerProtocol, data, pipeline: Pipeline, featu
         traceback.print_exc()
 
 
-def _combine_all_node_data(client, data, keys, *args, **kwargs) -> pd.DataFrame:
+def _combine_all_node_data(client, data, identifying_columns, *args, **kwargs) -> pd.DataFrame:
     results = _dispatch_tasks(client, data, method='get_data', *args, **kwargs)
 
     for r in results:
         info(f'Retrieved node data with columns {r.columns}')
 
-    combined_df = _merge_multiple_dfs(results, on=keys)
+    combined_df = _merge_multiple_dfs(results, on=identifying_columns)
 
     print(combined_df.columns)
 
