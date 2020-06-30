@@ -5,24 +5,6 @@ from typing import List
 import pandas as pd
 
 
-def fixed_length_string(string: str, desired_length: int = 128):
-    """
-    Either truncate or padd a string with 'a' so that it is of the specified
-    length.
-    TODO: This is token from Chang's repo. Do we really want to support this or
-        just enforce 128 length salts?
-    Args:
-        string (str): String to be processed
-        desired_length (int): Desired length of the string
-    """
-    diff = desired_length - len(string)
-    if diff > 0:
-        string = string + ("a" * diff)
-    elif diff < 0:
-        string = string[:diff]
-    return string
-
-
 def salthash(salt, string):
     """
     Hash string using SHA 512 hashing with salt. Base64 encode resulting
