@@ -2,7 +2,6 @@ import pytest
 
 from v6_carrier_py.encryption import salthash, encrypt_identifiers
 import pandas as pd
-import numpy as np
 
 
 def test_salthash():
@@ -37,7 +36,7 @@ class TestEncryptIdentifiers:
 
     def test_encrypt_identifiers_null_values(self):
         test_df = self.test_df.copy()
-        test_df['identifier1'] = np.nan
+        test_df['identifier1'] = None
         with pytest.raises(ValueError):
             encrypt_identifiers(test_df, self.test_salt,
                                 identifiers=self.test_identifiers)
