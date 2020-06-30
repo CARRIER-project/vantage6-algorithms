@@ -131,8 +131,7 @@ def test_train_model_accepts_dataset():
     client.get_results.return_value = [dataset]
     result = master.fit_pipeline(client, None, pipe, FEATURES, TARGET, IDENTIFIER_KEYS)
 
-    print(result)
-    assert True
+    assert result is not None
 
 
 def create_base_mock_client():
