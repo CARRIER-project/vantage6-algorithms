@@ -24,7 +24,10 @@ setup(
     packages=find_packages(),
     python_requires='>=3.6',
     install_requires=[
-        # 'vantage6-client'
+        'vantage6',
+        'pandas',
+        'vantage6-toolkit @ git+https://github.com/IKNL/vantage6-toolkit@vmaster#egg=vantage6-toolkit',
+        'scikit-learn'
     ]
     # ,
     # extras_require={

@@ -1,16 +1,31 @@
-from v6_carrier_py import master
 from unittest.mock import MagicMock
-import pytest
+
 import pandas as pd
+import pytest
+from sklearn import pipeline
+from sklearn.naive_bayes import GaussianNB
+from sklearn.preprocessing import StandardScaler
+
+from v6_carrier_py import master
 
 ID = 1
 TRIES = 1
 MOCK_TASK = {'id': ID}
-IDENTIFIER_KEYS = ['GBAGeboorteJaar', 'GBAGeboorteMaand', 'GBAGeboorteDag', 'GBAGeslacht', 'GBAPostcode', 'GBAHuisnummer',
-        'GBAToev']
+IDENTIFIER_KEYS = ['GBAGeboorteJaar', 'GBAGeboorteMaand', 'GBAGeboorteDag', 'GBAGeslacht', 'GBAPostcode',
+                   'GBAHuisnummer', 'GBAToev']
 KEY_VALUES = [1987, 10, 30, 1, '1098ln', 11, 'b']
 COLUMN1 = 'column1'
 COLUMN2 = 'column2'
+
+DATASET = 'tests/resources/joined_data.csv'
+
+# Arbitrary features
+FEATURES = ['height', 'weight', 'bmi', 'Age', 'n_smokingcat4', 'WOZ', 'N_ALCOHOL_CAT',
+            'ZVWKOPHOOGFACTOR_2010', 'ZVWKHUISARTS_2010', 'ZVWKFARMACIE_2010', 'ZVWKZIEKENHUIS_2010',
+            'ZVWKPARAMEDISCH_2010', 'ZVWKZIEKENVERVOER_2010',
+            'ZVWKBUITENLAND_2010', 'ZVWKOVERIG_2010', 'ZVWKEERSTELIJNSPSYCHO_2010', 'ZVWKGGZ_2010',
+            'ZVWKHULPMIDDEL_2010', 'ZVWKOPHOOGFACTOR_2011', 'ZVWKHUISARTS_2011']
+TARGET = 'N_CVD'
 
 
 def test_column_names_returns_column_set():
@@ -108,6 +123,17 @@ def test_correlation_matrix_dont_mix_up_partly_matching_keys():
     assert result[COLUMN1][COLUMN2] == 1
 
 
+def test_train_model_accepts_dataset():
+    dataset = load_dataset()
+    pipe = pipeline.make_pipeline(StandardScaler(), GaussianNB(priors=None))
+
+    client = create_base_mock_client()
+    client.get_results.return_value = [dataset]
+    result = master.fit_pipeline(client, None, pipe, FEATURES, TARGET, IDENTIFIER_KEYS)
+
+    assert result is not None
+
+
 def create_base_mock_client():
     client = MagicMock()
     client.create_new_task.return_value = MOCK_TASK
@@ -115,3 +141,7 @@ def create_base_mock_client():
     client.get_results.return_value = [COLUMN1, COLUMN2]
 
     return client()
+
+
+def load_dataset(path=DATASET):
+    return pd.read_csv(path)
