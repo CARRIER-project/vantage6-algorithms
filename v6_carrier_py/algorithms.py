@@ -1,6 +1,6 @@
 import pandas as pd
 from vantage6.tools.util import info
-
+from .encryption import encrypt_identifiers
 
 def RPC_column_names(data: pd.DataFrame, *args, **kwargs):
     """Column names
@@ -18,11 +18,14 @@ def RPC_correlation_matrix(data: pd.DataFrame, *args, **kwargs):
     return data.corr()
 
 
-def RPC_get_data(data: pd.DataFrame, *args, **kwargs):
+def RPC_get_pseudonimized_data(data: pd.DataFrame, identifying_fields, *args, **kwargs):
     """
-    Return the raw data.
-    TODO: This function should not exist in the final version of the code! The data should be pseudonymized at the very
-        least!
+    Return pseudonimized data.
 
+    TODO: Identifying fields depend on the data at the data station. These fields could maybe be configured at the data
+        station.
     """
+
+    encrypt_identifiers()
+
     return data

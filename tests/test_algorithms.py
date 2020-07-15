@@ -17,6 +17,6 @@ def test_corr_matrix_creates_corr_matrix():
 
 
 def test_get_data_returns_raw_data():
-    result = algorithms.RPC_get_data(DATA)
+    result = algorithms.RPC_get_pseudonimized_data(DATA)
 
     pd.testing.assert_frame_equal(DATA, result)
