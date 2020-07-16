@@ -174,4 +174,4 @@ def _combine_all_node_data(client, data, identifying_columns, *args, **kwargs) -
 def _merge_multiple_dfs(df_list, on):
     # TODO: How should we handle DataFrames with overlapping when those are not part of the join keys?
     # TODO: Decide what type of join to use. We should keep the maximum amount of records possible
-    return reduce(lambda left, right: pd.merge(left, right, on=on, how='inner', suffixes=(False, False)), df_list)
+    return reduce(lambda left, right: pd.merge(left, right, on=on, how='outer', suffixes=(False, False)), df_list)
