@@ -19,6 +19,7 @@ from sklearn.pipeline import Pipeline
 from vantage6.tools.container_client import ContainerClient
 from vantage6.tools.util import info
 import traceback
+from . import pipeline
 
 NUM_TRIES = 40
 TOKEN_FILE = 'TOKEN_FILE'
@@ -118,7 +119,7 @@ def correlation_matrix(client: ContainerClient, data, keys=None, *args, **kwargs
     return combined_df.corr()
 
 
-def fit_pipeline(client: ContainerClient, data, pipeline: Pipeline, features: List[str], target: str,
+def fit_pipeline(client: ContainerClient, data, pipe: Pipeline, features: List[str], target: str,
                  identifying_columns=None, *args, **kwargs):
     """
     Retrieve data from nodes and train data analysis pipeline on it. Returns the performance of the resulting model.
@@ -126,7 +127,7 @@ def fit_pipeline(client: ContainerClient, data, pipeline: Pipeline, features: Li
 
     :param client: Client for accessing Vantage6 proxy server. Is a parameter for all master algorithms
     :param data: Data from datastation as Pandas DataFrame. Is handled by wrapper
-    :param pipeline: A sklearn pipeline containing one or multiple data transformations. Should have a `fit` and
+    :param pipe: A sklearn pipeline containing one or multiple data transformations. Should have a `fit` and
                         `predict` method.
     :param features: The features that should be used in the fitting of the pipeline.
     :param target: The field that should be used as target for the machine learning algorithm.
@@ -135,8 +136,9 @@ def fit_pipeline(client: ContainerClient, data, pipeline: Pipeline, features: Li
     :param kwargs:
     :return:
     """
+    pipe = pipeline.reconstruct_pipeline(pipe)
     try:
-        info(f'Training pipeline with the following steps: {pipeline.named_steps}')
+        info(f'Training pipeline with the following steps: {pipe.named_steps}')
         results = _combine_all_node_data(client, data, identifying_columns, *args, **kwargs)
 
         X = results[features].values
@@ -146,8 +148,8 @@ def fit_pipeline(client: ContainerClient, data, pipeline: Pipeline, features: Li
         # TODO: Make splitting of dataset controllable from client-side
         X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=RANDOM_SEED)
 
-        pipeline.fit(X_train, y_train)
-        predictions = pipeline.predict(X_test)
+        pipe.fit(X_train, y_train)
+        predictions = pipe.predict(X_test)
 
         # TODO: Make metrics configurable
         score = metrics.mean_absolute_error(y_test, predictions)
