@@ -177,6 +177,10 @@ def _combine_all_node_data(client, data, identifying_columns, *args, **kwargs) -
                                               subset=identifying_columns)
     n_dropped_rows = len_before_drop - len(combined_df)
     info(f'Dropped {n_dropped_rows} rows with duplicate identifiers')
+
+    if combined_df.size < MIN_RECORDS:
+        raise Exception(f'Only {combined_df.size} records available for analysis! Privacy is not ensured.')
+
     return combined_df
 
 
