@@ -1,5 +1,5 @@
-vantage6
+git+https://github.com/IKNL/vantage6-common.git@1.1.0
 pandas
-git+https://github.com/IKNL/vantage6-client
-git+https://github.com/IKNL/vantage6-toolkit
+git+https://github.com/IKNL/vantage6-client.git@1.1.0
+git+https://github.com/IKNL/vantage6-toolkit.git@bugfix/change-clientcontainerprotocol-alias
 scikit-learn
