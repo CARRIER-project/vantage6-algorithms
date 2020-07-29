@@ -25,7 +25,7 @@
    :target: https://github.com/NLeSC/vantage6-algorithms
    :alt: GitHub Badge
 
-.. |License Badge| image:: https://img.shields.io/github/license/NLeSC/vantage6-algorithms
+.. |License Badge| image:: https://img.shields.io/github/license/CARRIER-project/vantage6-algorithms
    :target: https://github.com/NLeSC/vantage6-algorithms
    :alt: License Badge
 
@@ -66,8 +66,6 @@ vantage6-algorithms
 Algorithms developed for running on Vantage6
 
 
-The project setup is documented in `a separate document <project_setup.rst>`_. Feel free to remove this document (and/or the link to this document) if you don't need it.
-
 Installation
 ------------
 
@@ -90,9 +88,30 @@ Run tests (including coverage) with:
 Documentation
 *************
 
-.. _README:
 
-Include a link to your project's full documentation here.
+
+Algorithms
+**********
+The algorithms in this repo ar part of the vantage6_ solution. Vantage6 allows to execute computations on federated 
+datasets. 
+
+.. _vantage6: https://vantage6.ai
+
+TODO: Table with instructions how to call the different algorithms
+
+Analysis of Vertically Partitioned Data Using a TSE
+###################################################
+
+
+Based on the implementation of [SOEST2020]_
+
+.. [SOEST2020] van Soest PhD, Johan, Sun MSc, Chang, & Mussmann PhD, Bjoern Ole. (2020, February 4). FAIRHealth (Version v0.0.5). Zenodo. http://doi.org/10.5281/zenodo.3635839
+
+Read More
+*********
+See the `vantage6 documentation`__ for detailed instructions on how to install and use the server and nodes.
+
+.. __: https://docs.vantage6.ai/
 
 Contributing
 ************
@@ -103,15 +122,19 @@ have a look at the `contribution guidelines <CONTRIBUTING.rst>`_.
 License
 *******
 
-Copyright (c) 2020, 
+Copyright 2020
 
-Licensed under the MIT License.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+http://www.apache.org/licenses/LICENSE-2.0
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 
 Credits
