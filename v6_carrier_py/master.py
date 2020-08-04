@@ -167,9 +167,14 @@ def _combine_all_node_data(client, data, identifying_columns, *args, **kwargs) -
         info(f'Retrieved node data with columns {r.columns}')
 
     combined_df = _merge_multiple_dfs(results, on=identifying_columns)
+    info(','.join(combined_df.columns))
 
-    print(combined_df.columns)
-
+    # Drop duplicate rows
+    len_before_drop = len(combined_df)
+    combined_df = combined_df.drop_duplicates(keep=False,
+                                              subset=identifying_columns)
+    n_dropped_rows = len_before_drop - len(combined_df)
+    info(f'Dropped {n_dropped_rows} rows with duplicate identifiers')
     return combined_df
 
 
