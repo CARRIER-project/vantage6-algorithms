@@ -66,10 +66,11 @@ def test_master_corr_matrix_is_combined_corr_matrix():
     node_results = [df1, df2]
     client.get_results.return_value = node_results
 
-    result = master.correlation_matrix(client, None, tries=TRIES, keys='id')
-    target = pd.DataFrame({'id': [1], COLUMN1: [123], COLUMN2: [321]}).corr()
+    with patch('v6_carrier_py.master.MIN_RECORDS', 0):
+        result = master.correlation_matrix(client, None, tries=TRIES, keys='id')
+        target = pd.DataFrame({'id': [1], COLUMN1: [123], COLUMN2: [321]}).corr()
 
-    pd.testing.assert_frame_equal(target, result)
+        pd.testing.assert_frame_equal(target, result)
 
 
 def test_master_corr_matrix_joins_on_multiple_keys():
@@ -81,9 +82,11 @@ def test_master_corr_matrix_joins_on_multiple_keys():
     client.get_results.return_value = [df1, df2]
 
     target = pd.DataFrame(data=[KEY_VALUES + [123, 321]], columns=IDENTIFIER_KEYS + [COLUMN1, COLUMN2]).corr()
-    result = master.correlation_matrix(client, None, keys=IDENTIFIER_KEYS, tries=TRIES)
 
-    pd.testing.assert_frame_equal(target, result)
+    with patch('v6_carrier_py.master.MIN_RECORDS', 0):
+        result = master.correlation_matrix(client, None, keys=IDENTIFIER_KEYS, tries=TRIES)
+
+        pd.testing.assert_frame_equal(target, result)
 
 
 def test_correlation_matrix_if_no_keys_provided_infer_keys():
@@ -97,8 +100,9 @@ def test_correlation_matrix_if_no_keys_provided_infer_keys():
 
     target = pd.DataFrame(data=[key_values + [123, 321]], columns=IDENTIFIER_KEYS + [COLUMN1, COLUMN2]).corr()
 
-    # This time no keys are specified, but it should still give the expected result
-    result = master.correlation_matrix(client, None, tries=TRIES)
+    with patch('v6_carrier_py.master.MIN_RECORDS', 0):
+        # This time no keys are specified, but it should still give the expected result
+        result = master.correlation_matrix(client, None, tries=TRIES)
 
     pd.testing.assert_frame_equal(target, result)
 
@@ -118,9 +122,10 @@ def test_correlation_matrix_dont_mix_up_partly_matching_keys():
 
     client.get_results.return_value = [pd_left, pd_right]
 
-    # If data is merged correctly, correlation between column1 and column2 should be 1, otherwise it is 0.5
-    result = master.correlation_matrix(client, None, tries=TRIES)
-    assert result[COLUMN1][COLUMN2] == 1
+    with patch('v6_carrier_py.master.MIN_RECORDS', 0):
+        # If data is merged correctly, correlation between column1 and column2 should be 1, otherwise it is 0.5
+        result = master.correlation_matrix(client, None, tries=TRIES)
+        assert result[COLUMN1][COLUMN2] == 1
 
 
 def test_train_model_accepts_dataset():

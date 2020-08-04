@@ -26,6 +26,7 @@ TOKEN_FILE = 'TOKEN_FILE'
 RANDOM_SEED = 5
 MIN_RECORDS = 100
 
+
 def _dispatch_tasks(client: ClientContainerProtocol, data, method, *args, exclude_orgs=(), **kwargs):
     """
     Generic master algorithm
