@@ -121,7 +121,7 @@ def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, 
 
 
 def fit_pipeline(client: ClientContainerProtocol, data, pipe: Pipeline, features: List[str], target: str,
-                 identifying_columns=None, *args, **kwargs):
+                 keys=None, *args, **kwargs):
     """
     Retrieve data from nodes and train data analysis pipeline on it. Returns the performance of the resulting model.
     TODO: How and where do we save our model?
@@ -132,7 +132,7 @@ def fit_pipeline(client: ClientContainerProtocol, data, pipe: Pipeline, features
                         `predict` method.
     :param features: The features that should be used in the fitting of the pipeline.
     :param target: The field that should be used as target for the machine learning algorithm.
-    :param identifying_columns: The identifying fields for joining datasets.
+    :param keys: The identifying fields for joining datasets.
     :param args:
     :param kwargs:
     :return:
@@ -140,7 +140,7 @@ def fit_pipeline(client: ClientContainerProtocol, data, pipe: Pipeline, features
     pipe = pipeline.reconstruct_pipeline(pipe)
     try:
         info(f'Training pipeline with the following steps: {pipe.named_steps}')
-        results = _combine_all_node_data(client, data, identifying_columns, *args, **kwargs)
+        results = _combine_all_node_data(client, data, keys, *args, **kwargs)
 
         X = results[features].values
         y = results[target].values
@@ -165,10 +165,12 @@ def _combine_all_node_data(client, data, identifying_columns, *args, **kwargs) -
     results = _dispatch_tasks(client, data, method='get_data', *args, **kwargs)
 
     for r in results:
-        info(f'Retrieved node data with columns {r.columns}')
+        info(f'Retrieved node data with shape {r.shape}')
 
     combined_df = _merge_multiple_dfs(results, on=identifying_columns)
     info(','.join(combined_df.columns))
+
+    info(f'Joined table has shape {combined_df.shape}')
 
     # Drop duplicate rows, this happens in case identifying columns have
     # duplicate values (i.e. multiple entries for the same person or
@@ -179,8 +181,8 @@ def _combine_all_node_data(client, data, identifying_columns, *args, **kwargs) -
     n_dropped_rows = len_before_drop - len(combined_df)
     info(f'Dropped {n_dropped_rows} rows with duplicate identifiers')
 
-    if combined_df.size < MIN_RECORDS:
-        raise Exception(f'Only {combined_df.size} records available for analysis! Privacy is not ensured.')
+    if len(combined_df.index) < MIN_RECORDS:
+        raise Exception(f'Only {len(combined_df.index)} records available for analysis! Privacy is not ensured.')
 
     return combined_df
 

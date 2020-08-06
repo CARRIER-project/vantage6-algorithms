@@ -137,7 +137,7 @@ def test_train_model_accepts_dataset():
     client = create_base_mock_client()
     client.get_results.return_value = [dataset]
 
-    with patch('v6_carrier_py.master.pipeline', mock_pipeline):
+    with patch('v6_carrier_py.master.pipeline', mock_pipeline), patch('v6_carrier_py.master.MIN_RECORDS', 0):
         result = master.fit_pipeline(client, None, pipe, FEATURES, TARGET, IDENTIFIER_KEYS)
 
         assert result is not None

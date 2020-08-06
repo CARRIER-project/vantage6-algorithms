@@ -25,4 +25,5 @@ def RPC_get_data(data: pd.DataFrame, *args, **kwargs):
         least!
 
     """
+    info(f'Returning raw data with {len(data)} records')
     return data
