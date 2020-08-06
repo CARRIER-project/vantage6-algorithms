@@ -104,7 +104,7 @@ def column_names(client: ClientContainerProtocol, data, *args, exclude_orgs=(), 
     return column_set
 
 
-def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, **kwargs):
+def correlation_matrix(client: ClientContainerProtocol, data, merge_keys=None, *args, **kwargs):
     """
     Compute a correlation matrix over all datasets together. Data will be joined using the specified key. Right now
     the datasets are merged using outer join, which means that keys without matches will get empty values for the
@@ -115,13 +115,13 @@ def correlation_matrix(client: ClientContainerProtocol, data, keys=None, *args, 
     If no keys are specified the datasets are joined on all columns with the same name.
     TODO: What if different datasets use different keys to mean the same thing? How do we specify this?
     """
-    combined_df = _combine_all_node_data(client, data, keys, *args, **kwargs)
+    combined_df = _combine_all_node_data(client, data, merge_keys, *args, **kwargs)
 
     return combined_df.corr()
 
 
 def fit_pipeline(client: ClientContainerProtocol, data, pipe: Pipeline, features: List[str], target: str,
-                 keys=None, *args, **kwargs):
+                 merge_keys=None, *args, **kwargs):
     """
     Retrieve data from nodes and train data analysis pipeline on it. Returns the performance of the resulting model.
     TODO: How and where do we save our model?
@@ -132,7 +132,7 @@ def fit_pipeline(client: ClientContainerProtocol, data, pipe: Pipeline, features
                         `predict` method.
     :param features: The features that should be used in the fitting of the pipeline.
     :param target: The field that should be used as target for the machine learning algorithm.
-    :param keys: The identifying fields for joining datasets.
+    :param merge_keys: The identifying fields for joining datasets.
     :param args:
     :param kwargs:
     :return:
@@ -140,7 +140,7 @@ def fit_pipeline(client: ClientContainerProtocol, data, pipe: Pipeline, features
     pipe = pipeline.reconstruct_pipeline(pipe)
     try:
         info(f'Training pipeline with the following steps: {pipe.named_steps}')
-        results = _combine_all_node_data(client, data, keys, *args, **kwargs)
+        results = _combine_all_node_data(client, data, merge_keys, *args, **kwargs)
 
         X = results[features].values
         y = results[target].values
@@ -161,13 +161,13 @@ def fit_pipeline(client: ClientContainerProtocol, data, pipe: Pipeline, features
         traceback.print_exc()
 
 
-def _combine_all_node_data(client, data, identifying_columns, *args, **kwargs) -> pd.DataFrame:
+def _combine_all_node_data(client, data, merge_keys, *args, **kwargs) -> pd.DataFrame:
     results = _dispatch_tasks(client, data, method='get_data', *args, **kwargs)
 
     for r in results:
         info(f'Retrieved node data with shape {r.shape}')
 
-    combined_df = _merge_multiple_dfs(results, on=identifying_columns)
+    combined_df = _merge_multiple_dfs(results, on=merge_keys)
     info(','.join(combined_df.columns))
 
     info(f'Joined table has shape {combined_df.shape}')
@@ -177,12 +177,12 @@ def _combine_all_node_data(client, data, identifying_columns, *args, **kwargs) -
     # different persons with the same name & birthdate)
     len_before_drop = len(combined_df)
     combined_df = combined_df.drop_duplicates(keep=False,
-                                              subset=identifying_columns)
+                                              subset=merge_keys)
     n_dropped_rows = len_before_drop - len(combined_df)
     info(f'Dropped {n_dropped_rows} rows with duplicate identifiers')
 
     if len(combined_df.index) < MIN_RECORDS:
-        raise Exception(f'Only {len(combined_df.index)} records available for analysis! Privacy is not ensured.')
+        raise ValueError(f'Only {len(combined_df.index)} records available for analysis! Privacy is not ensured.')
 
     return combined_df
 

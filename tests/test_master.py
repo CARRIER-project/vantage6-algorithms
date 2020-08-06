@@ -58,45 +58,39 @@ def test_column_names_raise_exception_when_task_timeout():
 
 
 def test_master_corr_matrix_is_combined_corr_matrix():
-    client = create_base_mock_client()
-
     df1 = pd.DataFrame({'id': [1], COLUMN1: [123]})
     df2 = pd.DataFrame({'id': [1], COLUMN2: [321]})
 
-    node_results = [df1, df2]
-    client.get_results.return_value = node_results
+    client = create_basic_data_client(df1, df2)
 
     with patch('v6_carrier_py.master.MIN_RECORDS', 0):
-        result = master.correlation_matrix(client, None, tries=TRIES, keys='id')
+        result = master.correlation_matrix(client, None, tries=TRIES, merge_keys='id')
         target = pd.DataFrame({'id': [1], COLUMN1: [123], COLUMN2: [321]}).corr()
 
         pd.testing.assert_frame_equal(target, result)
 
 
 def test_master_corr_matrix_joins_on_multiple_keys():
-    client = create_base_mock_client()
-
     df1 = pd.DataFrame(data=[KEY_VALUES + [123]], columns=IDENTIFIER_KEYS + [COLUMN1])
     df2 = pd.DataFrame(data=[KEY_VALUES + [321]], columns=IDENTIFIER_KEYS + [COLUMN2])
 
-    client.get_results.return_value = [df1, df2]
+    client = create_basic_data_client(df1, df2)
 
     target = pd.DataFrame(data=[KEY_VALUES + [123, 321]], columns=IDENTIFIER_KEYS + [COLUMN1, COLUMN2]).corr()
 
     with patch('v6_carrier_py.master.MIN_RECORDS', 0):
-        result = master.correlation_matrix(client, None, keys=IDENTIFIER_KEYS, tries=TRIES)
+        result = master.correlation_matrix(client, None, merge_keys=IDENTIFIER_KEYS, tries=TRIES)
 
         pd.testing.assert_frame_equal(target, result)
 
 
 def test_correlation_matrix_if_no_keys_provided_infer_keys():
-    client = create_base_mock_client()
     key_values = [1987, 10, 30, 1, '1098ln', 11, 'b']
 
     df1 = pd.DataFrame(data=[key_values + [123]], columns=IDENTIFIER_KEYS + [COLUMN1])
     df2 = pd.DataFrame(data=[key_values + [321]], columns=IDENTIFIER_KEYS + [COLUMN2])
 
-    client.get_results.return_value = [df1, df2]
+    client = create_basic_data_client(df1, df2)
 
     target = pd.DataFrame(data=[key_values + [123, 321]], columns=IDENTIFIER_KEYS + [COLUMN1, COLUMN2]).corr()
 
@@ -108,8 +102,6 @@ def test_correlation_matrix_if_no_keys_provided_infer_keys():
 
 
 def test_correlation_matrix_dont_mix_up_partly_matching_keys():
-    client = create_base_mock_client()
-
     # Two different people with the same birth date
     person1 = [1987, 10, 30, 1, '1098ln', 11, 'b']
     person2 = [1987, 10, 30, 1, '1098ln', 12, '']
@@ -120,7 +112,7 @@ def test_correlation_matrix_dont_mix_up_partly_matching_keys():
     pd_left = pd.DataFrame(data_left, columns=IDENTIFIER_KEYS + [COLUMN1])
     pd_right = pd.DataFrame(data_right, columns=IDENTIFIER_KEYS + [COLUMN2])
 
-    client.get_results.return_value = [pd_left, pd_right]
+    client = create_basic_data_client(pd_left, pd_right)
 
     with patch('v6_carrier_py.master.MIN_RECORDS', 0):
         # If data is merged correctly, correlation between column1 and column2 should be 1, otherwise it is 0.5
@@ -141,6 +133,24 @@ def test_train_model_accepts_dataset():
         result = master.fit_pipeline(client, None, pipe, FEATURES, TARGET, IDENTIFIER_KEYS)
 
         assert result is not None
+
+
+def test_corr_matrix_blocks_with_few_records():
+    client = create_basic_data_client(
+        pd.DataFrame(data=[[1, 2]], columns=['key', 'value1']),
+        pd.DataFrame(data=[[1, 3]], columns=['key', 'value2'])
+    )
+
+    with pytest.raises(ValueError):
+        # If data is merged correctly, correlation between column1 and column2 should be 1, otherwise it is 0.5
+        master.correlation_matrix(client, None, tries=TRIES)
+
+
+def create_basic_data_client(*node_data):
+    client = create_base_mock_client()
+
+    client.get_results.return_value = node_data
+    return client
 
 
 def create_base_mock_client():
