@@ -60,8 +60,9 @@
    :target: https://github.com/NLeSC/vantage6-algorithms/actions?query=workflow%3A%22PyPI%22
    :alt: PyPI Publish
    
-.. |Coveralls| image:: https://img.shields.io/coveralls/github/CARRIER-project/vantage6-algorithms
-   :alt: Coverage
+.. |Coveralls| image:: https://coveralls.io/repos/github/CARRIER-project/vantage6-algorithms/badge.svg?branch=master
+   :target: https://coveralls.io/github/CARRIER-project/vantage6-algorithms?branch=master
+
 
 *******************
 vantage6-algorithms
