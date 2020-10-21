@@ -51,8 +51,7 @@
    :target: https://bestpractices.coreinfrastructure.org/projects/< replace with created project identifier >
    :alt: CII Best Practices Badge
 
-.. |Python Build| image:: https://github.com/NLeSC/vantage6-algorithms/workflows/Python/badge.svg
-   :target: https://github.com/NLeSC/vantage6-algorithms/actions?query=workflow%3A%22Python%22
+.. |Python Build| image:: https://img.shields.io/github/workflow/status/CARRIER-project/vantage6-algorithms/Build
    :alt: Python Build
 
 .. |PyPI Publish| image:: https://github.com/NLeSC/vantage6-algorithms/workflows/PyPI/badge.svg
