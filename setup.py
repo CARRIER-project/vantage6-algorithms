@@ -26,7 +26,7 @@ setup(
     install_requires=[
         'vantage6',
         'pandas',
-        'vantage6-client==1.2.0'
+        'vantage6-client==1.2.0',
         'scikit-learn'
     ]
     # ,
