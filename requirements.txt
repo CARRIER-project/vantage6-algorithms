@@ -1,5 +1,3 @@
-git+https://github.com/IKNL/vantage6-common.git@1.1.0
 pandas
-git+https://github.com/IKNL/vantage6-client.git@1.1.0
-git+https://github.com/IKNL/vantage6-toolkit.git@1.1.0
+vantage6-client==1.2.0
 scikit-learn

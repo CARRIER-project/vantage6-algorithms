@@ -16,7 +16,7 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from vantage6.tools.container_client import ClientContainerProtocol
+from vantage6.client import ContainerClient
 from vantage6.tools.util import info
 import traceback
 from . import pipeline
@@ -27,7 +27,7 @@ RANDOM_SEED = 5
 MIN_RECORDS = 100
 
 
-def _dispatch_tasks(client: ClientContainerProtocol, data, method, *args, exclude_orgs=(), **kwargs):
+def _dispatch_tasks(client: ContainerClient, data, method, *args, exclude_orgs=(), **kwargs):
     """
     Generic master algorithm
     """
@@ -87,7 +87,7 @@ def _get_results(client, tries, task):
     return results
 
 
-def column_names(client: ClientContainerProtocol, data, *args, exclude_orgs=(), **kwargs):
+def column_names(client: ContainerClient, data, *args, exclude_orgs=(), **kwargs):
     """Master algoritm.
 
     Ask all nodes for their column names and combines them in one set.
@@ -104,7 +104,7 @@ def column_names(client: ClientContainerProtocol, data, *args, exclude_orgs=(), 
     return column_set
 
 
-def correlation_matrix(client: ClientContainerProtocol, data, merge_keys=None, *args, **kwargs):
+def correlation_matrix(client: ContainerClient, data, merge_keys=None, *args, **kwargs):
     """
     Compute a correlation matrix over all datasets together. Data will be joined using the specified key. Right now
     the datasets are merged using outer join, which means that keys without matches will get empty values for the
@@ -120,7 +120,7 @@ def correlation_matrix(client: ClientContainerProtocol, data, merge_keys=None, *
     return combined_df.corr()
 
 
-def fit_pipeline(client: ClientContainerProtocol, data, pipe: Pipeline, features: List[str], target: str,
+def fit_pipeline(client: ContainerClient, data, pipe: Pipeline, features: List[str], target: str,
                  merge_keys=None, *args, **kwargs):
     """
     Retrieve data from nodes and train data analysis pipeline on it. Returns the performance of the resulting model.
