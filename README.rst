@@ -18,6 +18,8 @@
      -
    * - Continuous integration
      - |Python Build| |PyPI Publish|
+   * - Code Coverage
+     - |Coveralls|
 
 (Customize these badges with your own links, and check https://shields.io/ or https://badgen.net/ to see which other badges are available.)
 
@@ -57,6 +59,9 @@
 .. |PyPI Publish| image:: https://github.com/NLeSC/vantage6-algorithms/workflows/PyPI/badge.svg
    :target: https://github.com/NLeSC/vantage6-algorithms/actions?query=workflow%3A%22PyPI%22
    :alt: PyPI Publish
+   
+.. |Coveralls| image:: https://img.shields.io/coveralls/github/CARRIER-project/vantage6-algorithms
+   :alt: Coverage
 
 *******************
 vantage6-algorithms
