@@ -14,6 +14,26 @@ SPARQL_RETURN_FORMAT = CSV
 
 
 def sparql_wrapper(module: str):
+    """
+    Wrapper for a vantage6 algorithm module that will query a SPARQL endpoint stored in the DATABASE_URI environment
+    variable. It will then pass the result as a pandas DataFrame to a method implemented in `module`.
+
+    In the vantage6 infrastructure information is passed to algorithm containers through the use of environment
+    variables.
+
+    Required environment variables:
+
+    - `INPUT_FILE`: Path to the file containing the input arguments as a python dict.
+    - `DATABASE_URI`: URI to a SPARQL endpoint
+    - `TOKEN_FILE`: Path to a file containing a vantage6 authentication token
+    - `OUTPUT_FILE`: Path where algorithm output should be stored
+
+    The file indicated by the `INPUT_FILE` environment variable requires the field `query` in order to use this wrapper.
+    The value should be a SPARQL `SELECT` query string.
+
+    :param module: the name of a package that contains vantage6 algorithms
+    :return:
+    """
     info(f"wrapper for {module}")
 
     # read input from the mounted inputfile.
@@ -35,8 +55,6 @@ def sparql_wrapper(module: str):
 
     endpoint = os.environ["DATABASE_URI"]
 
-    # Workaround because the endpoint is automatically prefixed with the data folder. However this does not make
-    # sense for a sparql endpoint.
     endpoint = _fix_endpoint(endpoint)
 
     info(f"Using '{endpoint}' as triplestore endpoint")
@@ -69,7 +87,9 @@ def sparql_wrapper(module: str):
 
 def _fix_endpoint(endpoint: str) -> str:
     """
-    Remove all text before "http"
+    Remove all text before "http".
+    Workaround because the endpoint is automatically prefixed with the data folder. However this does not make sense for
+    a sparql endpoint.
 
     :param endpoint:
     :return:

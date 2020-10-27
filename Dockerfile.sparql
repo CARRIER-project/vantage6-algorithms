@@ -1,4 +1,4 @@
-# basic python3 image as base
+# Vantage6 algorithm-base has various vantage6 packages pre-installed
 FROM harbor.vantage6.ai/algorithms/algorithm-base:latest
 
 # This is a placeholder that should be overloaded by invoking
@@ -11,5 +11,5 @@ RUN pip install /app
 
 ENV PKG_NAME=${PKG_NAME}
 
-# Tell docker to execute `docker_wrapper()` when the image is run.
+# Tell docker to execute `sparql_wrapper()` when the image is run.
 CMD python -c "from v6_carrier_py.wrapper import sparql_wrapper; sparql_wrapper('${PKG_NAME}')"

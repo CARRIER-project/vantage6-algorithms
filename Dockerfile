@@ -1,4 +1,4 @@
-# basic python3 image as base
+# Vantage6 algorithm-base has various vantage6 packages pre-installed
 FROM harbor.vantage6.ai/algorithms/algorithm-base:latest
 
 # This is a placeholder that should be overloaded by invoking
