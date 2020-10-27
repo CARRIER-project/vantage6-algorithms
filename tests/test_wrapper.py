@@ -9,11 +9,13 @@ from v6_carrier_py import wrapper
 MOCK_MODULE = 'mock_module'
 MOCK_TOKEN = 'token'
 MOCK_ENDPOINT = 'http://example.org'
+MOCK_SPARQL_RESULT = 's,p,o\nthis,is,fake'
 
 
 @patch('v6_carrier_py.wrapper.dispact_rpc')
 @patch('v6_carrier_py.wrapper.os')
-def test_wrapper_passes_dataframe(os: MagicMock, dispact_rpc: MagicMock, tmp_path: Path):
+@patch('v6_carrier_py.wrapper.SPARQLWrapper')
+def test_wrapper_passes_dataframe(SPARQLWrapper: MagicMock, os: MagicMock, dispact_rpc: MagicMock, tmp_path: Path):
     input_file = tmp_path / 'input_file.pkl'
     token_file = tmp_path / 'token.txt'
     output_file = tmp_path / 'output.pkl'
@@ -34,9 +36,11 @@ def test_wrapper_passes_dataframe(os: MagicMock, dispact_rpc: MagicMock, tmp_pat
         f.write(MOCK_TOKEN)
 
     dispact_rpc.return_value = pd.DataFrame()
+    SPARQLWrapper.return_value.query.return_value.convert.return_value = MOCK_SPARQL_RESULT.encode()
 
     wrapper.sparql_wrapper(MOCK_MODULE)
 
     dispact_rpc.assert_called_once()
-    pd.testing.assert_frame_equal(pd.DataFrame(), dispact_rpc.call_args[0][0])
 
+    target_df = pd.DataFrame([['this', 'is', 'fake']], columns=['s', 'p', 'o'])
+    pd.testing.assert_frame_equal(target_df, dispact_rpc.call_args[0][0])
