@@ -1,16 +1,19 @@
+import os
 import pickle
-from typing import BinaryIO
+from io import StringIO
 
+import pandas as pd
+from SPARQLWrapper import SPARQLWrapper, CSV
 from vantage6.client import serialization
 from vantage6.tools import docker_wrapper
 from vantage6.tools.data_format import DataFormat
 from vantage6.tools.dispatch_rpc import dispact_rpc
 from vantage6.tools.util import info
-import os
-import pandas as pd
+
+SPARQL_RETURN_FORMAT = CSV
 
 
-def triplestore_wrapper(module: str):
+def sparql_wrapper(module: str):
     info(f"wrapper for {module}")
 
     # read input from the mounted inputfile.
@@ -31,6 +34,11 @@ def triplestore_wrapper(module: str):
         token = fp.read().strip()
 
     endpoint = os.environ["DATABASE_URI"]
+
+    # Workaround because the endpoint is automatically prefixed with the data folder. However this does not make
+    # sense for a sparql endpoint.
+    endpoint = _fix_endpoint(endpoint)
+
     info(f"Using '{endpoint}' as triplestore endpoint")
 
     data = query_triplestore(endpoint, query)
@@ -59,5 +67,21 @@ def triplestore_wrapper(module: str):
             fp.write(pickle.dumps(output))
 
 
+def _fix_endpoint(endpoint: str) -> str:
+    """
+    Remove all text before "http"
+
+    :param endpoint:
+    :return:
+    """
+    idx = endpoint.find('http')
+    return endpoint[idx:]
+
+
 def query_triplestore(endpoint: str, query: str):
-    return pd.DataFrame()
+    sparql = SPARQLWrapper(endpoint, returnFormat=SPARQL_RETURN_FORMAT)
+    sparql.setQuery(query)
+
+    result = sparql.query().convert().decode()
+
+    return pd.read_csv(StringIO(result))

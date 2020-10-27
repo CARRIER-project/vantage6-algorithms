@@ -1,8 +1,10 @@
-from pathlib import Path
-from unittest.mock import patch, DEFAULT, MagicMock, call
-from v6_carrier_py import wrapper
 import pickle
+from pathlib import Path
+from unittest.mock import patch, MagicMock
+
 import pandas as pd
+
+from v6_carrier_py import wrapper
 
 MOCK_MODULE = 'mock_module'
 MOCK_TOKEN = 'token'
@@ -33,7 +35,7 @@ def test_wrapper_passes_dataframe(os: MagicMock, dispact_rpc: MagicMock, tmp_pat
 
     dispact_rpc.return_value = pd.DataFrame()
 
-    wrapper.triplestore_wrapper(MOCK_MODULE)
+    wrapper.sparql_wrapper(MOCK_MODULE)
 
     dispact_rpc.assert_called_once()
     pd.testing.assert_frame_equal(pd.DataFrame(), dispact_rpc.call_args[0][0])
