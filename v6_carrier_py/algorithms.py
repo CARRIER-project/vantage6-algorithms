@@ -27,3 +27,15 @@ def RPC_get_data(data: pd.DataFrame, *args, **kwargs):
     """
     info(f'Returning raw data with {len(data)} records')
     return data
+
+
+def RPC_count(data: pd.DataFrame, *args, **kwargs):
+    """
+    Count the number of rows in the result.
+
+    :param data:
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    return len(data.index)
