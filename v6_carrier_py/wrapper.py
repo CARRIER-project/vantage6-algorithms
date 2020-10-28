@@ -31,6 +31,25 @@ def sparql_wrapper(module: str):
     The file indicated by the `INPUT_FILE` environment variable requires the field `query` in order to use this wrapper.
     The value should be a SPARQL `SELECT` query string.
 
+    Example
+    ======
+    Given the following input parameters:
+    ```
+    {'method': 'column_names',
+     'query':
+     '''
+     PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+    SELECT ?person ?name ?email
+    WHERE {
+    ?person foaf:name ?name .
+    ?person foaf:mbox ?email .
+    }
+    '''
+     }
+
+    The wrapper will provide the `column_names` algorithm with a pandas dataframe with the columns `person`, `name`,
+    `email`.
+
     :param module: the name of a package that contains vantage6 algorithms
     :return:
     """
