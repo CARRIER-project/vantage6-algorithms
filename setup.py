@@ -27,7 +27,8 @@ setup(
         'vantage6',
         'pandas',
         'vantage6-client==1.2.0',
-        'scikit-learn'
+        'scikit-learn',
+        'sparqlwrapper'
     ]
     # ,
     # extras_require={
