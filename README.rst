@@ -7,7 +7,7 @@
    * - \2. License
      - |License Badge|
    * - Continuous integration
-     - |Python Build| |PyPI Publish|
+     - |Python Build|
    * - Code Coverage
      - |Coveralls|
 
@@ -20,10 +20,7 @@
 .. |License Badge| image:: https://img.shields.io/github/license/CARRIER-project/vantage6-algorithms
    :target: https://github.com/NLeSC/vantage6-algorithms
    :alt: License Badge
-
-.. |PyPI Badge| image:: https://img.shields.io/pypi/v/vantage6-algorithms.svg?colorB=blue
-   :target: https://pypi.python.org/project/vantage6-algorithms/
-   :alt: PyPI Badge
+   
 .. |Research Software Directory Badge| image:: https://img.shields.io/badge/rsd-vantage6-algorithms-00a3e3.svg
    :target: https://www.research-software.nl/software/vantage6-algorithms
    :alt: Research Software Directory Badge
