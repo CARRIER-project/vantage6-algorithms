@@ -11,7 +11,7 @@
    * - Code Coverage
      - |Coveralls|
    * - Docker image
-     - harbor.carrier-mu.src.surf-hosted.nl/carrier/vantage6-algorithms
+     - `harbor.carrier-mu.src.surf-hosted.nl/carrier/vantage6-algorithms`
 
 .. |GitHub Badge| image:: https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue
    :target: https://github.com/NLeSC/vantage6-algorithms
