@@ -2,20 +2,10 @@
    :widths: 25 25
    :header-rows: 1
 
-   * - fair-software.nl recommendations
-     - Badges
    * - \1. Code repository
      - |GitHub Badge|
    * - \2. License
      - |License Badge|
-   * - \3. Community Registry
-     - |PyPI Badge| |Research Software Directory Badge|
-   * - \4. Enable Citation
-     - |Zenodo Badge|
-   * - \5. Checklist
-     - |CII Best Practices Badge|
-   * - **Other best practices**
-     -
    * - Continuous integration
      - |Python Build| |PyPI Publish|
    * - Code Coverage
